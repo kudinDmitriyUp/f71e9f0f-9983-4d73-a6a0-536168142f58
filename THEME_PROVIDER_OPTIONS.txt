@@ -1,0 +1,58 @@
+================================================================================
+                        THEME OPTIONS (v4)
+================================================================================
+
+STYLE PROPS
+-----------
+
+1. borderRadius
+   • "rounded"
+   • "soft"
+   • "pill"
+
+2. contentWidth
+   • "small"
+   • "compact"
+   • "medium"
+   • "mediumLarge"
+
+3. cardStyle
+   • "solid"
+   • "outline"
+   • "gradient-mesh"
+   • "gradient-radial"
+   • "inset"
+   • "glass-elevated"
+   • "glass-depth"
+   • "gradient-bordered"
+   • "layered-gradient"
+   • "soft-shadow"
+   • "subtle-shadow"
+   • "elevated-border"
+   • "inner-glow"
+   • "spotlight"
+
+4. primaryButtonStyle
+   • "gradient"
+   • "shadow"
+   • "flat"
+   • "radial-glow"
+   • "diagonal-gradient"
+   • "double-inset"
+   • "primary-glow"
+   • "inset-glow"
+   • "soft-glow"
+   • "glass-shimmer"
+   • "neon-outline"
+   • "lifted"
+   • "depth-layers"
+   • "accent-edge"
+   • "metallic"
+
+5. secondaryButtonStyle
+   • "glass"
+   • "solid"
+   • "layered"
+   • "radial-glow"
+
+================================================================================

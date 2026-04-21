@@ -1,0 +1,157 @@
+import { motion } from "motion/react";
+import { ArrowUpRight, Loader2 } from "lucide-react";
+import Button from "@/components/ui/Button";
+import TextAnimation from "@/components/ui/TextAnimation";
+import GridOrCarousel from "@/components/ui/GridOrCarousel";
+import ImageOrVideo from "@/components/ui/ImageOrVideo";
+import { useButtonClick } from "@/hooks/useButtonClick";
+import useBlogPosts from "@/hooks/useBlogPosts";
+
+type BlogItem = {
+  category: string;
+  title: string;
+  excerpt: string;
+  authorName: string;
+  authorImageSrc: string;
+  date: string;
+  imageSrc: string;
+  href?: string;
+  onClick?: () => void;
+};
+
+const BlogCardItem = ({ item }: { item: BlogItem }) => {
+  const handleClick = useButtonClick(item.href, item.onClick);
+
+  return (
+    <article
+      className="card group flex flex-col justify-between gap-5 p-5 rounded cursor-pointer"
+      onClick={handleClick}
+    >
+      <div className="flex flex-col gap-2">
+        <span className="card w-fit rounded px-2 py-0.5 text-xs mb-0.5">{item.category}</span>
+
+        <h3 className="text-2xl md:text-3xl font-medium leading-tight line-clamp-2">{item.title}</h3>
+        <p className="text-sm leading-tight opacity-75 line-clamp-2">{item.excerpt}</p>
+
+        <div className="flex items-center gap-3 mt-1.5">
+          <ImageOrVideo
+            imageSrc={item.authorImageSrc}
+            className="size-9 rounded-full object-cover"
+          />
+          <div className="flex flex-col">
+            <span className="text-sm font-medium">{item.authorName}</span>
+            <span className="text-xs opacity-75">{item.date}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="relative aspect-square rounded overflow-hidden">
+        <ImageOrVideo
+          imageSrc={item.imageSrc}
+          className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 flex items-center justify-center group-hover:bg-background/20 group-hover:backdrop-blur-xs transition-all duration-300">
+          <button
+            className="primary-button flex items-center justify-center size-12 rounded-full opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 transition-all duration-300 cursor-pointer"
+            onClick={handleClick}
+          >
+            <ArrowUpRight className="size-5 text-primary-cta-text" strokeWidth={2} />
+          </button>
+        </div>
+      </div>
+    </article>
+  );
+};
+
+type BlogMediaCardsProps = {
+  tag: string;
+  title: string;
+  description: string;
+  primaryButton?: { text: string; href: string };
+  secondaryButton?: { text: string; href: string };
+  items?: BlogItem[];
+};
+
+const BlogMediaCards = ({
+  tag,
+  title,
+  description,
+  primaryButton,
+  secondaryButton,
+  items: itemsProp,
+}: BlogMediaCardsProps) => {
+  const { posts, isLoading } = useBlogPosts();
+  const isFromApi = posts.length > 0;
+  const items = isFromApi
+    ? posts.map((p) => ({
+        category: p.category,
+        title: p.title,
+        excerpt: p.excerpt,
+        authorName: p.authorName,
+        authorImageSrc: p.authorAvatar,
+        date: p.date,
+        imageSrc: p.imageSrc,
+        onClick: p.onBlogClick,
+      }))
+    : itemsProp;
+
+  if (isLoading && !itemsProp) {
+    return (
+      <section aria-label="Blog section" className="py-20">
+        <div className="w-content-width mx-auto flex justify-center">
+          <Loader2 className="size-8 animate-spin text-foreground" strokeWidth={1.5} />
+        </div>
+      </section>
+    );
+  }
+
+  if (!items || items.length === 0) {
+    return null;
+  }
+
+  return (
+    <section aria-label="Blog section" className="py-20">
+      <div className="w-content-width mx-auto flex flex-col gap-8">
+        <div className="flex flex-col items-center gap-3 md:gap-2">
+          <span className="card rounded px-3 py-1 text-sm">{tag}</span>
+
+          <TextAnimation
+            text={title}
+            variant="slide-up"
+            tag="h2"
+            className="text-6xl font-medium text-center text-balance"
+          />
+
+          <TextAnimation
+            text={description}
+            variant="slide-up"
+            tag="p"
+            className="md:max-w-6/10 text-lg leading-tight text-center"
+          />
+
+          {(primaryButton || secondaryButton) && (
+            <div className="flex flex-wrap justify-center gap-3 mt-1 md:mt-2">
+              {primaryButton && <Button text={primaryButton.text} href={primaryButton.href} variant="primary" animate />}
+              {secondaryButton && <Button text={secondaryButton.text} href={secondaryButton.href} variant="secondary" animate delay={0.1} />}
+            </div>
+          )}
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-15%" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
+          <GridOrCarousel>
+            {items.map((item, index) => (
+              <BlogCardItem key={index} item={item} />
+            ))}
+          </GridOrCarousel>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+export default BlogMediaCards;
